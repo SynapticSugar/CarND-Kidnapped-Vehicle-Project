@@ -6,7 +6,7 @@ This repository contains all the code needed to complete the third project for t
 
 #### Submission
 
-This repository in its entierty forms the submission for this project.  The files ```particle_filter.cc``` and ```particle_filter.h``` contain the meat of the particle filter, while there were some additions to ```helper_functions.h``` and minor modifications to ```main.cpp```.  This code, specifically the ```particle_filter```, follows the Google Style Guide for C++.  The additions to the other files follow the style of the pre-exisiting code.
+This repository in its entierty forms the submission for this project.  The files ```particle_filter.cc``` and ```particle_filter.h``` contain the core of the particle filter, while there were some additions to ```helper_functions.h``` and minor modifications to ```main.cpp```.  This code, specifically the ```particle_filter```, follows the Google Style Guide for C++.  The additions to the other files follow the style of the pre-exisiting code.
 
 ## Project Introduction
 
@@ -129,44 +129,54 @@ You can find the inputs to the particle filter in the `data` directory.
 ![alt text](./sim.png "Kidnaped Vehicle Simulation Results")
 
 ## Accuracy
-Does your particle filter localize the vehicle to within the desired accuracy?
 The accuracy of the particle filter was calculated from the difference between the ground truth and the estimator result for each time step.
 
-The final error achieved by the particle filter of size 100 after 2,443 time steps was:
+The final error achieved by the particle filter from various particle sizes are shown below:
 
-| Pose | Error |
-|-------|-----|
-| x (meters) | 0.116 |
-| y (meters) | 0.110 |
-| yaw (rad) | 0.006 |
+| Pose | 10 | 100 | 2000 |
+|-------|-----|-----|-----|
+| x (meters) | 0.152 | 0.116 | 0.109 |
+| y (meters) | 0.125 | 0.110 | 0.101 |
+| yaw (rad) | 0.10 | 0.006 | 0.009 |
 
-The number of particles was chosen to be 100.  This provided good estimates without slowing the processing time too much.  More particles, did show a slight decrease in the x,y position error, but not the yaw error. The maximum particle count that did not exceed the time limit was 2000 particles and can be seen in ```sim2000.png```. Lowering the particle count to 10 particles significantly increased the x and y errors.
+The number of particles was chosen to be 100.  This provided good estimates without slowing the processing time too much.  Adding more particles did show a slight decrease in the x,y position error, but not the yaw error. The maximum particle count that did not exceed the time limit was 2000 particles and can be seen in ```sim2000.png```. Lowering the particle count to 10 particles significantly increased the x and y errors.
 
 ## Performance
 Does your particle run within the specified time of 100 seconds?
 
-The simulation took 49.5 seconds to complete, which was well below the threshold of 100 seconds.  Unfortunately this number also has a lot to do with the processor capability, but it should give a good ball park value of perfmance.  It is most useful when used as a metric on the same machine between subsequent runs when testing different optimizations.
+| Particles | 10 | 100 | 2000 |
+|-------|-----|-----|-----|
+| Time (s) | 50.42 | 49.5 | 98.6 |
+
+The simulation took 49.5 seconds to complete with 100 particles, which was well below the threshold of 100 seconds.  Unfortunately, this result also has alot to do with the processor capability, but it should never the less give a good ball park performance value.  It is most useful when used as a metric on the same machine between subsequent runs when testing different optimizations.
 
 
 ## Particle Filter
 Does your code use a particle filter to localize the robot?
+
 The particle filter implemented in this project consists of 4 main steps:
 
 ### Initialization
 
-Using the initial guess which comes from a noisy GPS measurement and the vehicle heading from an inertial sensor an arbitrary number of particles are created at this pose with random Gaussian noise specific to the known standard deviations of the sensors.
+Using the initial guess, which comes from a noisy GPS measurement and the vehicle heading from an inertial sensor, an arbitrary number of particles are created at this pose with random Gaussian noise specific to the known standard deviations of the sensors.
 
-## Prediction
+### Prediction
 
-Using the vehicle estimate yaw rate from gyrometers and the velocity from the car the predicted position for each particle is propagated forward based on the time delta and the appropriate sensor noise is added.
+Using the vehicle estimate yaw rate from gyrometers and the velocity from the car, the predicted position for each particle is propagated forward based on the time delta, and the appropriate sensor noise is added.
 
-## Update
+### Update
 
-Using the predicted locations of all the particles and a set of observations of landmarks from the cars radar/lidar sensors and an existing known map of the landmarks each particle associates the measurements with the closest predicted landmarks and a weight is assigned based on a multivariate normal distribution.
+Using the predicted locations of all the particles and a set of observations of landmarks from the cars radar/lidar sensors as well as an existing known map of the landmarks, each particle associates the measurements with the closest predicted landmarks. Each particle is then given a weight based on a multivariate normal distribution.
 
-## Resample
+### Resample
 
-A new set of particles is sampled with replacement from the original set according to the weighted distribution.  This means that are still the original number of arbitrary particles but now they better represent the Baysian posterior.  These particles are then fed back into the prediction step if any new landmark observations come in.
+A new set of particles is sampled with replacement from the original set, according to the weighted distribution.  This means there are still the original number of arbitrary particles but now they better represent the Baysian posterior.  These particles are then fed back into the prediction step if any new landmark observations come in.
 
+## References
 
-
+1. http://planning.cs.uiuc.edu/node99.html
+2. https://google.github.io/styleguide/cppguide.html
+3. https://en.wikipedia.org/wiki/Multivariate_normal_distribution
+4. http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
+5. http://www.cplusplus.com/reference/random/default_random_engine/
+6. http://en.cppreference.com/w/cpp/numeric/random/normal_distribution
