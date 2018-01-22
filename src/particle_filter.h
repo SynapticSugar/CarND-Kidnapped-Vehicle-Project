@@ -1,3 +1,7 @@
+// Particle Filter
+// Created January 14, 2018
+// Author: April Blaylock
+//
 #ifndef PARTICLE_FILTER_H_
 #define PARTICLE_FILTER_H_
 #include "helper_functions.h"

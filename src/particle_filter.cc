@@ -115,7 +115,7 @@ void ParticleFilter::UpdateWeights(const double sensor_range,
       // assume the landmark ids must be mapped one-to-one with the vector ids
       assert(id == map.landmark_list[id - 1].id_i);
 
-      // calculate the MVGP
+      // calculate the multivariate gaussian probability
       double mvgp = (1 / (2 * M_PI * std_dev[0] * std_dev[1])) *
                     exp(-(((x - map.landmark_list[id - 1].x_f) *
                            (x - map.landmark_list[id - 1].x_f)) /
