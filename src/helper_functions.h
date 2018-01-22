@@ -241,4 +241,26 @@ inline bool read_landmark_data(std::string filename, std::vector<LandmarkObs>& o
 	return true;
 }
 
+/* Helper function to normalize angles between [0 and 2PI).
+ *
+ * References: https://stackoverflow.com/questions/11498169/dealing-with-angle-wrap-in-c-code
+ *
+ * @param the input angle in radians
+ * @output the new angle between [0 and 2PI)
+ */
+inline double wrap2pi(double rval) {
+	rval = fmod(rval, 2.0 * M_PI);
+	if (rval < 0) {
+		rval += 2.0 * M_PI;
+	}
+	return rval;
+}
+
+inline double distance(double x1, double y1, double x2, double y2) {
+	double dx = x2 - x1;
+	double dy = y2 - y1;
+	return sqrt(dx * dx + dy * dy);
+}
+
+
 #endif /* HELPER_FUNCTIONS_H_ */
